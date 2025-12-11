@@ -33,6 +33,56 @@ from src.data_utils.oa_custom_datasets.get_dataset_patch import get_dataset
 from src.reward_modeling.scoring.score import get_reward
 
 
+def setup_peft_model_rm(model, training_conf):
+    """
+    Setup PEFT/LoRA for reward model if enabled in configuration.
+
+    Args:
+        model: The base reward model to wrap with PEFT
+        training_conf: Training configuration namespace
+
+    Returns:
+        Model wrapped with PEFT if enabled, original model otherwise
+    """
+    if not getattr(training_conf, "peft_model", False):
+        return model
+
+    peft_type = getattr(training_conf, "peft_type", "lora")
+    if peft_type != "lora":
+        logging.warning(f"PEFT type {peft_type} not supported, using LoRA")
+
+    try:
+        from peft import LoraConfig, TaskType, get_peft_model
+    except ImportError:
+        raise ImportError(
+            "PEFT is not installed. Please install it with: pip install peft"
+        )
+
+    # Get LoRA parameters with defaults (rank 32 by default)
+    lora_r = getattr(training_conf, "lora_r", 32)
+    lora_alpha = getattr(training_conf, "lora_alpha", 64)
+    lora_dropout = getattr(training_conf, "lora_dropout", 0.05)
+    lora_target_modules = getattr(training_conf, "lora_target_modules", ["query_key_value"])
+    lora_bias = getattr(training_conf, "lora_bias", "none")
+
+    print(f"Enabling LoRA training for RM with r={lora_r}, alpha={lora_alpha}, dropout={lora_dropout}")
+    print(f"Target modules: {lora_target_modules}")
+
+    lora_config = LoraConfig(
+        r=lora_r,
+        lora_alpha=lora_alpha,
+        lora_dropout=lora_dropout,
+        target_modules=lora_target_modules,
+        bias=lora_bias,
+        task_type=TaskType.SEQ_CLS,  # Sequence classification for reward models
+    )
+
+    model = get_peft_model(model, lora_config)
+    model.print_trainable_parameters()
+
+    return model
+
+
 class RMTrainer(Trainer):
     def __init__(
         self,
@@ -207,6 +257,9 @@ def main():
 
     tokenizer = get_tokenizer(training_conf)
     model = get_model(training_conf, tokenizer)
+
+    # Apply PEFT/LoRA if enabled
+    model = setup_peft_model_rm(model, training_conf)
 
     train, evals = get_dataset(training_conf, mode="rm")
     train_collate_fn = RankingDataCollator(

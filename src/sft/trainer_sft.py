@@ -33,6 +33,56 @@ from transformers.utils import is_datasets_available
 from src.data_utils.oa_custom_datasets.get_dataset_patch import get_dataset
 
 
+def setup_peft_model(model, training_conf):
+    """
+    Setup PEFT/LoRA for the model if enabled in configuration.
+
+    Args:
+        model: The base model to wrap with PEFT
+        training_conf: Training configuration namespace
+
+    Returns:
+        Model wrapped with PEFT if enabled, original model otherwise
+    """
+    if not getattr(training_conf, "peft_model", False):
+        return model
+
+    peft_type = getattr(training_conf, "peft_type", "lora")
+    if peft_type != "lora":
+        logging.warning(f"PEFT type {peft_type} not supported, using LoRA")
+
+    try:
+        from peft import LoraConfig, TaskType, get_peft_model
+    except ImportError:
+        raise ImportError(
+            "PEFT is not installed. Please install it with: pip install peft"
+        )
+
+    # Get LoRA parameters with defaults (rank 32 by default)
+    lora_r = getattr(training_conf, "lora_r", 32)
+    lora_alpha = getattr(training_conf, "lora_alpha", 64)
+    lora_dropout = getattr(training_conf, "lora_dropout", 0.05)
+    lora_target_modules = getattr(training_conf, "lora_target_modules", ["query_key_value"])
+    lora_bias = getattr(training_conf, "lora_bias", "none")
+
+    print(f"Enabling LoRA training with r={lora_r}, alpha={lora_alpha}, dropout={lora_dropout}")
+    print(f"Target modules: {lora_target_modules}")
+
+    lora_config = LoraConfig(
+        r=lora_r,
+        lora_alpha=lora_alpha,
+        lora_dropout=lora_dropout,
+        target_modules=lora_target_modules,
+        bias=lora_bias,
+        task_type=TaskType.CAUSAL_LM,
+    )
+
+    model = get_peft_model(model, lora_config)
+    model.print_trainable_parameters()
+
+    return model
+
+
 def compute_metrics(eval_pred, preprocess_fns, metrics):
     out = {}
     for metric, preprocess_fn in zip(metrics, preprocess_fns):
@@ -410,6 +460,9 @@ def main():
     metrics, preprocess_fns = get_metrics(training_conf, tokenizer)
 
     model = get_model(training_conf, tokenizer)
+
+    # Apply PEFT/LoRA if enabled
+    model = setup_peft_model(model, training_conf)
 
     if training_conf.quantization:
         import bitsandbytes  # This is noisy, so delay importing until after argument parsing so it doesn't make --help noisy

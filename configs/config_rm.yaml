@@ -49,12 +49,29 @@ defaults_rm:
   residual_dropout_lima: false
 
 
-# Example reward model config for Pythia 70M model (which becomes a 44M reward model after conversion)
+# LoRA default configuration for RM (used when peft_model: true and peft_type: lora)
+lora_rm_defaults:
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value  # For GPT-NeoX/Pythia models
+
+
+# ==========================================
+# Pythia v1 Reward Model Configurations
+# ==========================================
+# Note: Pythia models become smaller reward models after conversion
+# (e.g., 70M -> 44M due to removing LM head and adding scalar head)
+
+# Pythia 70M -> 44M RM
 rm-pythia-44m:
-  datasets: # Preference datasets to use for training
+  datasets:
     - custom_hf_pref
   use_custom_sampler: true
-  model_name: tlc4418/pythia_70m_sft # Base SFT model (here Pythia 70M)
+  model_name: tlc4418/pythia_70m_sft
   residual_dropout: 0.01
   dtype: bf16
   max_length: 520
@@ -66,4 +83,351 @@ rm-pythia-44m:
   num_train_epochs: 5
   eval_steps: 300
   save_steps: 1000
-  output_dir: models/rm-pythia-44m # '_seed{rng_seed}' will be appended
+  output_dir: models/rm-pythia-44m
+
+# Pythia 70M RM with LoRA
+rm-pythia-44m-lora:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: tlc4418/pythia_70m_sft
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 4
+  per_device_train_batch_size: 8
+  per_device_eval_batch_size: 8
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-44m-lora
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value
+
+# Pythia 160M RM (base model: EleutherAI/pythia-160m or a fine-tuned variant)
+rm-pythia-160m:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-160m
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 4
+  per_device_train_batch_size: 8
+  per_device_eval_batch_size: 8
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-160m
+
+# Pythia 160M RM with LoRA
+rm-pythia-160m-lora:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-160m
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 4
+  per_device_train_batch_size: 8
+  per_device_eval_batch_size: 8
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-160m-lora
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value
+
+# Pythia 410M RM
+rm-pythia-410m:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-410m
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 4
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-410m
+
+# Pythia 410M RM with LoRA
+rm-pythia-410m-lora:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-410m
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 4
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-410m-lora
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value
+
+# Pythia 1B RM
+rm-pythia-1b:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-1b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 8
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-1b
+
+# Pythia 1B RM with LoRA
+rm-pythia-1b-lora:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-1b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 8
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-1b-lora
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value
+
+# Pythia 1.4B RM
+rm-pythia-1.4b:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-1.4b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 8
+  per_device_train_batch_size: 2
+  per_device_eval_batch_size: 2
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-1.4b
+
+# Pythia 1.4B RM with LoRA
+rm-pythia-1.4b-lora:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-1.4b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 8
+  per_device_train_batch_size: 2
+  per_device_eval_batch_size: 2
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-1.4b-lora
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value
+
+# Pythia 2.8B RM
+rm-pythia-2.8b:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-2.8b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  gradient_checkpointing: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 16
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-2.8b
+
+# Pythia 2.8B RM with LoRA
+rm-pythia-2.8b-lora:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-2.8b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  gradient_checkpointing: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 16
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-2.8b-lora
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value
+
+# Pythia 6.9B RM
+rm-pythia-6.9b:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-6.9b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  gradient_checkpointing: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 32
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-6.9b
+
+# Pythia 6.9B RM with LoRA
+rm-pythia-6.9b-lora:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-6.9b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  gradient_checkpointing: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 32
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-6.9b-lora
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value
+
+# Pythia 12B RM
+rm-pythia-12b:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-12b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  gradient_checkpointing: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 64
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-12b
+
+# Pythia 12B RM with LoRA
+rm-pythia-12b-lora:
+  datasets:
+    - custom_hf_pref
+  use_custom_sampler: true
+  model_name: EleutherAI/pythia-12b
+  residual_dropout: 0.01
+  dtype: bf16
+  max_length: 520
+  use_flash_attention: true
+  gradient_checkpointing: true
+  warmup_steps: 50
+  gradient_accumulation_steps: 64
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  num_train_epochs: 5
+  eval_steps: 300
+  save_steps: 1000
+  output_dir: models/rm-pythia-12b-lora
+  peft_model: true
+  peft_type: lora
+  lora_r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  lora_target_modules:
+    - query_key_value

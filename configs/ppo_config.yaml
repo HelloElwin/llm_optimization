@@ -17,11 +17,17 @@ model:
   model_path:
   model_arch_type: causal
   num_layers_unfrozen: 2
+  # PEFT/LoRA configuration (set peft_config to enable LoRA training)
+  # Default: null (full fine-tuning)
+  # To enable LoRA, set peft_config to a LoraConfig object in the trainer
+  peft_config: null
+  model_extra_configs: {}
 
 tokenizer:
   tokenizer_path:
-  truncation_side: "left" 
-  padding_side: "left" 
+  truncation_side: "left"
+  padding_side: "left"
+  tokenizer_extra_configs: {}
 
 optimizer:
   name: "adamw"
@@ -50,13 +56,28 @@ method:
   cliprange: 0.2
   cliprange_value: 0.2
   vf_coef: 1
-  scale_reward: False 
+  scale_reward: False
   ref_mean: null
   ref_std: null
   cliprange_reward: 10
+  num_value_layers_unfrozen: 2
   gen_kwargs:
     max_new_tokens: 256
     top_k: 0
     top_p: 1.0
     do_sample: True
     temperature: 1.0
+
+
+# =============================================
+# LoRA Default Configuration for PPO
+# =============================================
+# When using LoRA with PPO, the peft_config should be set programmatically
+# in the trainer_rl.py script based on the config_rl.yaml settings.
+# Default LoRA parameters for Pythia models:
+#   - r (rank): 32
+#   - lora_alpha: 64
+#   - lora_dropout: 0.05
+#   - target_modules: ["query_key_value"] (for GPT-NeoX/Pythia)
+#   - bias: "none"
+#   - task_type: "CAUSAL_LM"

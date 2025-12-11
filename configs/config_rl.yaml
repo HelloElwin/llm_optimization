@@ -14,6 +14,12 @@ defaults_rlhf:
   dtype: bf16
 
 
+# =============================================
+# Pythia v1 RLHF/PPO Configurations
+# =============================================
+# These configurations support all Pythia v1 model sizes
+# Both full fine-tuning and LoRA variants are provided
+
 # Most paremeters are based off OpenAssistant's defaults for pythia_rlhf
 pythia_rlhf_individual:
   output_dir: runs/ppo_individual
@@ -27,7 +33,7 @@ pythia_rlhf_individual:
 
   rank_config:
     is_reward_model: true
-    model_names: 
+    model_names:
       - models/rm-pythia-44m_seed1
     cache_dir: .cache
     pooling: last
@@ -62,7 +68,7 @@ pythia_rlhf_ensemble:
 
   rank_config:
     is_reward_model: true
-    model_names: 
+    model_names:
       - models/rm-pythia-44m_seed1
       - models/rm-pythia-44m_seed2
       - models/rm-pythia-44m_seed3
@@ -85,8 +91,640 @@ pythia_rlhf_ensemble:
     quantization: false
     seq2seqmodel: false
     freeze_layer:
-    num_layers_unfrozen: 2 
+    num_layers_unfrozen: 2
     residual_dropout: 0.2
     use_flash_attention: false
     dtype: bf16
     batch_size: 32
+
+
+# =============================================
+# Pythia 70M RLHF configurations
+# =============================================
+
+pythia-70m_rlhf:
+  output_dir: runs/ppo_pythia_70m
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-44m_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 128
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-70m
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    num_layers_unfrozen: 2
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+
+
+pythia-70m_rlhf_lora:
+  output_dir: runs/ppo_pythia_70m_lora
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-44m_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 128
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-70m
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+    use_lora: true
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    lora_target_modules:
+      - query_key_value
+
+
+# =============================================
+# Pythia 160M RLHF configurations
+# =============================================
+
+pythia-160m_rlhf:
+  output_dir: runs/ppo_pythia_160m
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-160m_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 128
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-160m
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    num_layers_unfrozen: 2
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+
+
+pythia-160m_rlhf_lora:
+  output_dir: runs/ppo_pythia_160m_lora
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-160m_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 128
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-160m
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+    use_lora: true
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    lora_target_modules:
+      - query_key_value
+
+
+# =============================================
+# Pythia 410M RLHF configurations
+# =============================================
+
+pythia-410m_rlhf:
+  output_dir: runs/ppo_pythia_410m
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-410m_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-410m
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    num_layers_unfrozen: 2
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 32
+
+
+pythia-410m_rlhf_lora:
+  output_dir: runs/ppo_pythia_410m_lora
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-410m_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-410m
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 32
+    use_lora: true
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    lora_target_modules:
+      - query_key_value
+
+
+# =============================================
+# Pythia 1B RLHF configurations
+# =============================================
+
+pythia-1b_rlhf:
+  output_dir: runs/ppo_pythia_1b
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-1b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-1b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    num_layers_unfrozen: 2
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 16
+
+
+pythia-1b_rlhf_lora:
+  output_dir: runs/ppo_pythia_1b_lora
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-1b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-1b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 16
+    use_lora: true
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    lora_target_modules:
+      - query_key_value
+
+
+# =============================================
+# Pythia 1.4B RLHF configurations
+# =============================================
+
+pythia-1.4b_rlhf:
+  output_dir: runs/ppo_pythia_1.4b
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-1.4b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-1.4b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    num_layers_unfrozen: 2
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 16
+
+
+pythia-1.4b_rlhf_lora:
+  output_dir: runs/ppo_pythia_1.4b_lora
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 32
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-1.4b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 64
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-1.4b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 16
+    use_lora: true
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    lora_target_modules:
+      - query_key_value
+
+
+# =============================================
+# Pythia 2.8B RLHF configurations
+# =============================================
+
+pythia-2.8b_rlhf:
+  output_dir: runs/ppo_pythia_2.8b
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 16
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-2.8b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 32
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-2.8b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    num_layers_unfrozen: 2
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 8
+
+
+pythia-2.8b_rlhf_lora:
+  output_dir: runs/ppo_pythia_2.8b_lora
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 16
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-2.8b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 32
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-2.8b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 8
+    use_lora: true
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    lora_target_modules:
+      - query_key_value
+
+
+# =============================================
+# Pythia 6.9B RLHF configurations
+# =============================================
+
+pythia-6.9b_rlhf:
+  output_dir: runs/ppo_pythia_6.9b
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 8
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-6.9b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 16
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-6.9b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    num_layers_unfrozen: 2
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 4
+
+
+pythia-6.9b_rlhf_lora:
+  output_dir: runs/ppo_pythia_6.9b_lora
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 8
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-6.9b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 16
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-6.9b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 4
+    use_lora: true
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    lora_target_modules:
+      - query_key_value
+
+
+# =============================================
+# Pythia 12B RLHF configurations
+# =============================================
+
+pythia-12b_rlhf:
+  output_dir: runs/ppo_pythia_12b
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 4
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-12b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 8
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-12b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    num_layers_unfrozen: 2
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 2
+
+
+pythia-12b_rlhf_lora:
+  output_dir: runs/ppo_pythia_12b_lora
+  datasets:
+    - alpaca_farm
+
+  gold_config:
+    model_name: alpaca_farm_models/reward-model-human
+    is_alpacafarm_rm: false
+    batch_size: 4
+
+  rank_config:
+    is_reward_model: true
+    model_names:
+      - models/rm-pythia-12b_seed1
+    cache_dir: .cache
+    pooling: last
+    residual_dropout: 0.01
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 8
+
+  sft_config:
+    is_reward_model: false
+    model_name: EleutherAI/pythia-12b
+    cache_dir: .cache
+    quantization: false
+    seq2seqmodel: false
+    freeze_layer:
+    residual_dropout: 0.2
+    use_flash_attention: false
+    dtype: bf16
+    batch_size: 2
+    use_lora: true
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    lora_target_modules:
+      - query_key_value

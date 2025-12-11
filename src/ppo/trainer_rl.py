@@ -21,6 +21,46 @@ from src.ppo.custom_trlx_trainers.custom_accelerate_ppo_trainer import (
 )
 
 
+def get_lora_config(sft_config):
+    """
+    Create a LoRA configuration from sft_config if LoRA is enabled.
+
+    Args:
+        sft_config: Configuration namespace containing LoRA settings
+
+    Returns:
+        LoraConfig if use_lora is True, None otherwise
+    """
+    if not getattr(sft_config, "use_lora", False):
+        return None
+
+    try:
+        from peft import LoraConfig, TaskType
+    except ImportError:
+        raise ImportError(
+            "PEFT is not installed. Please install it with: pip install peft"
+        )
+
+    # Get LoRA parameters with defaults
+    lora_r = getattr(sft_config, "lora_r", 32)
+    lora_alpha = getattr(sft_config, "lora_alpha", 64)
+    lora_dropout = getattr(sft_config, "lora_dropout", 0.05)
+    lora_target_modules = getattr(sft_config, "lora_target_modules", ["query_key_value"])
+    lora_bias = getattr(sft_config, "lora_bias", "none")
+
+    print(f"Enabling LoRA training with r={lora_r}, alpha={lora_alpha}, dropout={lora_dropout}")
+    print(f"Target modules: {lora_target_modules}")
+
+    return LoraConfig(
+        r=lora_r,
+        lora_alpha=lora_alpha,
+        lora_dropout=lora_dropout,
+        target_modules=lora_target_modules,
+        bias=lora_bias,
+        task_type=TaskType.CAUSAL_LM,
+    )
+
+
 def argument_parsing(notebook=False, notebook_args=None, **kwargs):
     parser = argparse.ArgumentParser()
     parser.add_argument("--configs", nargs="+", required=True)
@@ -109,6 +149,14 @@ def main():
 
     trlx_config.tokenizer.tokenizer_path = sft_config.model_name
     trlx_config.model.model_path = sft_config.model_name
+
+    # Configure LoRA if enabled
+    lora_config = get_lora_config(sft_config)
+    if lora_config is not None:
+        trlx_config.model.peft_config = lora_config
+        # When using LoRA, we typically don't freeze layers manually
+        # as PEFT handles the parameter efficiency
+        print("LoRA enabled - PEFT will handle parameter efficiency")
 
     # Main changes ---------------------------------------------------------------------
 
