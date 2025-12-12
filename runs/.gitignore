@@ -1,2 +1,9 @@
-*
+# Ignore experiment outputs but allow scripts
+# Ignore all directories (experiment outputs)
+*/
+
+# But don't ignore shell scripts
+!*.sh
+
+# Keep this gitignore
 !.gitignore
