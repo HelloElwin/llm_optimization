@@ -1,0 +1,207 @@
+# Best-of-N (BoN) Configuration File
+# ===================================
+# This file contains configurations for running BoN experiments with all Pythia v1 models.
+#
+# Usage:
+#   python src/bon/run_bon_pipeline.py {proxy_rm_path} [options]
+#
+# The proxy_rm_path should contain a {seed} placeholder, e.g.:
+#   python src/bon/run_bon_pipeline.py models/rm-pythia-44m_seed{seed} --seeds 1,2,3,4,5 --ensembles
+
+
+# =============================================
+# Default BoN Configuration
+# =============================================
+defaults_bon:
+  big_n: 12600  # Total number of answers for unbiased estimator
+  sample_ns: "1,2,4,8,16,32,64,128,256,512,1024,2048,4096,6144,8192,12500"
+  seeds: "1,2,3,4,5"  # Seeds for ensemble (cardinality = 5)
+  ensembles: true
+  uwo_weights: "0.5"
+  gold_labelled_generations: "tlc4418/gold_labelled_gens"
+
+
+# =============================================
+# Pythia v1 BoN Configurations
+# =============================================
+# Each configuration specifies the RM path template and recommended settings
+# for that model size. All models support both individual and ensemble BoN.
+
+# Pythia 70M -> 44M RM (smallest, fastest)
+bon-pythia-44m:
+  rm_path_template: "models/rm-pythia-44m_seed{seed}"
+  model_size: "44M"
+  base_model: "EleutherAI/pythia-70m"
+  description: "BoN with 44M reward models (from 70M Pythia base)"
+  recommended_batch_size: 128
+  # Example command:
+  # python src/bon/run_bon_pipeline.py models/rm-pythia-44m_seed{seed} -o bon_pythia_44m --seeds 1,2,3,4,5 --ensembles
+
+# Pythia 70M RM with LoRA
+bon-pythia-44m-lora:
+  rm_path_template: "models/rm-pythia-44m-lora_seed{seed}"
+  model_size: "44M (LoRA)"
+  base_model: "EleutherAI/pythia-70m"
+  description: "BoN with 44M LoRA reward models"
+  recommended_batch_size: 128
+
+# Pythia 160M RM
+bon-pythia-160m:
+  rm_path_template: "models/rm-pythia-160m_seed{seed}"
+  model_size: "160M"
+  base_model: "EleutherAI/pythia-160m"
+  description: "BoN with 160M reward models"
+  recommended_batch_size: 128
+  # Example command:
+  # python src/bon/run_bon_pipeline.py models/rm-pythia-160m_seed{seed} -o bon_pythia_160m --seeds 1,2,3,4,5 --ensembles
+
+# Pythia 160M RM with LoRA
+bon-pythia-160m-lora:
+  rm_path_template: "models/rm-pythia-160m-lora_seed{seed}"
+  model_size: "160M (LoRA)"
+  base_model: "EleutherAI/pythia-160m"
+  description: "BoN with 160M LoRA reward models"
+  recommended_batch_size: 128
+
+# Pythia 410M RM
+bon-pythia-410m:
+  rm_path_template: "models/rm-pythia-410m_seed{seed}"
+  model_size: "410M"
+  base_model: "EleutherAI/pythia-410m"
+  description: "BoN with 410M reward models"
+  recommended_batch_size: 64
+  # Example command:
+  # python src/bon/run_bon_pipeline.py models/rm-pythia-410m_seed{seed} -o bon_pythia_410m --seeds 1,2,3,4,5 --ensembles
+
+# Pythia 410M RM with LoRA
+bon-pythia-410m-lora:
+  rm_path_template: "models/rm-pythia-410m-lora_seed{seed}"
+  model_size: "410M (LoRA)"
+  base_model: "EleutherAI/pythia-410m"
+  description: "BoN with 410M LoRA reward models"
+  recommended_batch_size: 64
+
+# Pythia 1B RM
+bon-pythia-1b:
+  rm_path_template: "models/rm-pythia-1b_seed{seed}"
+  model_size: "1B"
+  base_model: "EleutherAI/pythia-1b"
+  description: "BoN with 1B reward models"
+  recommended_batch_size: 64
+  # Example command:
+  # python src/bon/run_bon_pipeline.py models/rm-pythia-1b_seed{seed} -o bon_pythia_1b --seeds 1,2,3,4,5 --ensembles
+
+# Pythia 1B RM with LoRA
+bon-pythia-1b-lora:
+  rm_path_template: "models/rm-pythia-1b-lora_seed{seed}"
+  model_size: "1B (LoRA)"
+  base_model: "EleutherAI/pythia-1b"
+  description: "BoN with 1B LoRA reward models"
+  recommended_batch_size: 64
+
+# Pythia 1.4B RM
+bon-pythia-1.4b:
+  rm_path_template: "models/rm-pythia-1.4b_seed{seed}"
+  model_size: "1.4B"
+  base_model: "EleutherAI/pythia-1.4b"
+  description: "BoN with 1.4B reward models"
+  recommended_batch_size: 32
+  # Example command:
+  # python src/bon/run_bon_pipeline.py models/rm-pythia-1.4b_seed{seed} -o bon_pythia_1.4b --seeds 1,2,3,4,5 --ensembles
+
+# Pythia 1.4B RM with LoRA
+bon-pythia-1.4b-lora:
+  rm_path_template: "models/rm-pythia-1.4b-lora_seed{seed}"
+  model_size: "1.4B (LoRA)"
+  base_model: "EleutherAI/pythia-1.4b"
+  description: "BoN with 1.4B LoRA reward models"
+  recommended_batch_size: 32
+
+# Pythia 2.8B RM
+bon-pythia-2.8b:
+  rm_path_template: "models/rm-pythia-2.8b_seed{seed}"
+  model_size: "2.8B"
+  base_model: "EleutherAI/pythia-2.8b"
+  description: "BoN with 2.8B reward models"
+  recommended_batch_size: 16
+  # Example command:
+  # python src/bon/run_bon_pipeline.py models/rm-pythia-2.8b_seed{seed} -o bon_pythia_2.8b --seeds 1,2,3,4,5 --ensembles
+
+# Pythia 2.8B RM with LoRA
+bon-pythia-2.8b-lora:
+  rm_path_template: "models/rm-pythia-2.8b-lora_seed{seed}"
+  model_size: "2.8B (LoRA)"
+  base_model: "EleutherAI/pythia-2.8b"
+  description: "BoN with 2.8B LoRA reward models"
+  recommended_batch_size: 16
+
+# Pythia 6.9B RM
+bon-pythia-6.9b:
+  rm_path_template: "models/rm-pythia-6.9b_seed{seed}"
+  model_size: "6.9B"
+  base_model: "EleutherAI/pythia-6.9b"
+  description: "BoN with 6.9B reward models"
+  recommended_batch_size: 8
+  # Example command:
+  # python src/bon/run_bon_pipeline.py models/rm-pythia-6.9b_seed{seed} -o bon_pythia_6.9b --seeds 1,2,3,4,5 --ensembles
+
+# Pythia 6.9B RM with LoRA
+bon-pythia-6.9b-lora:
+  rm_path_template: "models/rm-pythia-6.9b-lora_seed{seed}"
+  model_size: "6.9B (LoRA)"
+  base_model: "EleutherAI/pythia-6.9b"
+  description: "BoN with 6.9B LoRA reward models"
+  recommended_batch_size: 8
+
+# Pythia 12B RM (largest)
+bon-pythia-12b:
+  rm_path_template: "models/rm-pythia-12b_seed{seed}"
+  model_size: "12B"
+  base_model: "EleutherAI/pythia-12b"
+  description: "BoN with 12B reward models"
+  recommended_batch_size: 4
+  # Example command:
+  # python src/bon/run_bon_pipeline.py models/rm-pythia-12b_seed{seed} -o bon_pythia_12b --seeds 1,2,3,4,5 --ensembles
+
+# Pythia 12B RM with LoRA
+bon-pythia-12b-lora:
+  rm_path_template: "models/rm-pythia-12b-lora_seed{seed}"
+  model_size: "12B (LoRA)"
+  base_model: "EleutherAI/pythia-12b"
+  description: "BoN with 12B LoRA reward models"
+  recommended_batch_size: 4
+
+
+# =============================================
+# Quick Reference: RM Training -> BoN Workflow
+# =============================================
+#
+# Step 1: Train reward models with multiple seeds (for ensembles)
+#   accelerate launch src/reward_modeling/training/trainer_rm.py \
+#     --configs defaults_rm rm-pythia-{size} --rng_seed 1
+#   # Repeat for seeds 2, 3, 4, 5
+#
+# Step 2: Run BoN with trained RMs
+#   python src/bon/run_bon_pipeline.py models/rm-pythia-{size}_seed{seed} \
+#     -o bon_pythia_{size} --seeds 1,2,3,4,5 --ensembles
+#
+# Output files:
+#   - Individual RMs: runs/{output_dir}/seed{s}/bon_sampled_results.json
+#   - Mean ensemble:  runs/{output_dir}/ensemble_mean/bon_sampled_results.json
+#   - WCO ensemble:   runs/{output_dir}/ensemble_wco/bon_sampled_results.json
+#   - UWO ensemble:   runs/{output_dir}/ensemble_uwo-{weight}/bon_sampled_results.json
+
+
+# =============================================
+# Model Size Reference
+# =============================================
+# | Base Model          | RM Size | Config Name      |
+# |---------------------|---------|------------------|
+# | EleutherAI/pythia-70m   | ~44M    | rm-pythia-44m    |
+# | EleutherAI/pythia-160m  | ~160M   | rm-pythia-160m   |
+# | EleutherAI/pythia-410m  | ~410M   | rm-pythia-410m   |
+# | EleutherAI/pythia-1b    | ~1B     | rm-pythia-1b     |
+# | EleutherAI/pythia-1.4b  | ~1.4B   | rm-pythia-1.4b   |
+# | EleutherAI/pythia-2.8b  | ~2.8B   | rm-pythia-2.8b   |
+# | EleutherAI/pythia-6.9b  | ~6.9B   | rm-pythia-6.9b   |
+# | EleutherAI/pythia-12b   | ~12B    | rm-pythia-12b    |
